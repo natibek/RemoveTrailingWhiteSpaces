@@ -109,8 +109,6 @@ int main(int argc, char *argv[])
             //fprintf(stderr, "&");
         } else if (ch == '\n') {
             //fprintf(stderr, "%c", ch);
-
-
             if (line_ranges.flag){
                 if (in_range(&line_ranges, line_num)){
                     fputc(ch, new_ft);
