@@ -56,22 +56,22 @@ int main(int argc, char *argv[])
     int show = 0;
     int verbose = 0;
 
-    if (argc >= 2 && !strcmp(argv[1], "-help")){
-        fprintf(stdout, "./rm_tws file_name:\tcreates new file with name file_name_ntws that has no trailing white spaces\n");
-        fprintf(stdout, "./rm_tws -help:    \tdisplays infro about the remove trailing white spaces utility\n");
-        fprintf(stdout, "Flags: (need a file target first)\n");
-        fprintf(stdout, "\t -l/-lines:  \t followed by an ranges of line numbers to remove trailing white spaces from\n");
-        fprintf(stdout, "\t -v/-verbose:\t will print the line numbers where trainling white spaces were found and how many\n");
-        fprintf(stdout, "\t -s/-show:   \t will not create a new file. Prints out the lines of code/text with trailing white spaces shown as &\n");   
+    if (argc >= 2 && !strcmp(argv[1], "--help")){
+        fprintf(stdout, "./rm_tws file_name:\tcreates new file with name file_name_ntws that has no trailing white spaces.\n");
+        fprintf(stdout, "./rm_tws --help:    \tdisplays infro about the remove trailing white spaces utility.\n");
+        fprintf(stdout, "\nFlags: (need a file target first)\n");
+        fprintf(stdout, "\t -l/-lines:  \t followed by an ranges of line numbers to remove trailing white spaces from,\n");
+        fprintf(stdout, "\t -v/-verbose:\t will print the line numbers where trainling white spaces were found and how many,\n");
+        fprintf(stdout, "\t -s/-show:   \t will not create a new file. Prints out the lines of code/text with trailing white spaces shown as @.\n");   
         exit(1);
     }
     if (argc > 2){
         for (int i = 2; i < argc; i++){
             // fprintf(stderr,"Current arg = %s\n", argv[i]);
 
-            if (!strcmp(argv[i],"-lines") || !strcmp(argv[i],"-l")){
+            if (!strcmp(argv[i],"--lines") || !strcmp(argv[i],"-l")){
                 if (line_ranges.flag){
-                    fprintf(stderr, "Can't have the -lines tag multiple times\n");
+                    fprintf(stderr, "Can't have the -lines tag multiple times.\n");
                     exit(1);
                 }
                 line_ranges.flag = 1;
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
                 
                 for (int j = start_ind; j < argc && argv[j][0] != '-'; j++, i++, num_ranges++){
                     if (!atoi(argv[j])){
-                        fprintf(stderr, "Invalid line number %s\n", argv[j]);
+                        fprintf(stderr, "Invalid line number %s.\n", argv[j]);
                         exit(1);
                     }
                 }
@@ -93,13 +93,13 @@ int main(int argc, char *argv[])
                 line_ranges.num_ranges = num_ranges;
 
                 if (num_ranges % 2){
-                    fprintf(stderr, "There should be an even number of ranges: found %d\n", num_ranges);
+                    fprintf(stderr, "There should be an even number of ranges: found %d.\n", num_ranges);
                     print_arr(line_ranges.ranges, line_ranges.num_ranges);
                     exit(1);
                 }
             } 
-            else if (!strcmp(argv[i],"-verbose") || !strcmp(argv[i],"-v")) verbose = 1;
-            else if (!strcmp(argv[i], "-show") || !strcmp(argv[i], "-s")) show = 1;
+            else if (!strcmp(argv[i],"--verbose") || !strcmp(argv[i],"-v")) verbose = 1;
+            else if (!strcmp(argv[i], "--show") || !strcmp(argv[i], "-s")) show = 1;
         }
     }
 
@@ -110,8 +110,13 @@ int main(int argc, char *argv[])
     ft = fopen(file_name, "r");
 
     if (ft == NULL){
-        fprintf(stderr, "Cannot open file: %s\n", file_name);
-        exit(1);
+        if (argv[1][0] == '-'){
+            fprintf(stderr, "First argument should be file name.\nInvalid flag: %s. Try --help to see available flags.\n", file_name);
+            exit(1);
+        } else {
+            fprintf(stderr, "Cannot open/find file: %s.\n", file_name);
+            exit(1);
+        }
     }
 
     int file_name_len = strlen(file_name);
